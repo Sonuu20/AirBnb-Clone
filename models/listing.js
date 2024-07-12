@@ -15,7 +15,7 @@ const listingSchema = new Schema({
     },
     price: Number,
     location: String,
-    Country: String,
+    country: String,
 
 });
 

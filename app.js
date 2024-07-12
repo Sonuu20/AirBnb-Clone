@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import Listing from "./models/listing.js";
 import { fileURLToPath } from "url";
 import path from 'path';
-
+import methodoverride from "method-override";
 
 const app = express();
 
@@ -24,6 +24,7 @@ async function main() {
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({extended: true}));
+app.use(methodoverride("_method"))
 
 app.get("/", (req, res) => {
     res.send("Hi, I'm root");
@@ -55,6 +56,29 @@ app.post("/listings", async (req, res) => {
     console.log(newListing);
     await newListing.save();
     res.redirect("/listings");
+})
+
+//Edit Route
+app.get("/listings/:id/edit", async (req, res) => {
+    let {id} = req.params;
+    const listing = await Listing.findById(id);
+    res.render("listings/edit.ejs", {listing});
+})
+
+//Update Route
+app.put("/listings/:id", async (req, res) => {
+    let {id} = req.params;
+    await Listing.findByIdAndUpdate(id, {...req.body.listing});
+    res.redirect(`/listings/${id}`);
+})
+
+//Delete Route
+app.delete("/listings/:id", async (req, res) => {
+    let {id} = req.params;
+    let deletedListing = await Listing.findByIdAndDelete(id);
+    console.log(deletedListing);
+    res.redirect("/listings");
+
 })
 
 // app.get("/testListing", async (req, res) => {
