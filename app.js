@@ -4,6 +4,7 @@ import Listing from "./models/listing.js";
 import { fileURLToPath } from "url";
 import path from 'path';
 import methodoverride from "method-override";
+import ejsMate from "ejs-mate";
 
 const app = express();
 
@@ -25,6 +26,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({extended: true}));
 app.use(methodoverride("_method"))
+app.engine('ejs', ejsMate);
+app.use(express.static(path.join(__dirname, "/public")));
 
 app.get("/", (req, res) => {
     res.send("Hi, I'm root");
